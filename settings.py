@@ -23,4 +23,5 @@ LAYERS = {
     'ground': 1,
     'soil': 2,
     'soil water': 3,
-}
+    'crop': 4,
+    'player': 5,}

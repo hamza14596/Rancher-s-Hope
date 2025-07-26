@@ -14,8 +14,8 @@ class Game:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.QUIT()
-                    sys.EXIT()
+                    pygame.quit()
+                    sys.exit()
 
 if __name__ == "__main__":
     game = Game()

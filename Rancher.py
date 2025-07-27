@@ -1,9 +1,12 @@
 import pygame
 from settings import * 
+from help import *
 
 class  Player(pygame.sprite.Sprite):
      def  __init__(self,position,group):
           super().__init__(group)
+          self.import_assests()
+
 
           self.image = pygame.Surface((32, 64))
           self.image.fill('green')
@@ -12,6 +15,16 @@ class  Player(pygame.sprite.Sprite):
           self.direction = pygame.math.Vector2()
           self.position = pygame.math.Vector2(self.rect.center)   
           self.speed = 200
+     def import_assests(self):
+          self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
+                            'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
+                            'right_hoe': [], 'left_hoe': [], 'up_hoe': [], 'down_hoe': [],
+                            'right_axe': [], 'left_axe': [], 'up_axe': [], 'down_axe': [],
+                            'right_water': [], 'left_water': [], 'up_water': [], 'down_water': []
+          }
+          for animation in self.animations.keys():
+                full_path = f'graphics/player/{animation}'
+                self.animations[animation] = import_folder(full_path)
 
      def input(self):
           keys = pygame.key.get_pressed()

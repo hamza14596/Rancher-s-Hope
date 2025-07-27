@@ -1,6 +1,7 @@
 import pygame
 from settings import * 
 from help import *
+from ticker import Ticker
 
 class  Player(pygame.sprite.Sprite):
      def  __init__(self,position,group):
@@ -11,13 +12,33 @@ class  Player(pygame.sprite.Sprite):
           self.frame_index = 0
 
 
-
+          #Player Spriten Setup
           self.image = self.animations[self.status][self.frame_index]
           self.rect = self.image.get_rect(center = position)
 
+          #Player Movement Setup
           self.direction = pygame.math.Vector2()
           self.position = pygame.math.Vector2(self.rect.center)   
           self.speed = 200
+
+          #Timer
+          self.timers = {
+               'tool use' : Ticker (350,self.use_tool)
+          }
+
+          #tools 
+          self.tool = 'axe'
+
+     #Tool Use
+     def use_tool(self):
+          
+          if keys[pygame.K_SPACE]:
+               self.timers['tool use'].activate()
+               print('using tool')
+      
+
+
+
      def import_assests(self):
           self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
                             'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
@@ -64,6 +85,12 @@ class  Player(pygame.sprite.Sprite):
                          self.status += '_idle'
 
 
+
+         #Tool Status
+         if self.timers['tool use'].active: 
+              print('tool is being used')
+ 
+
       
        
 
@@ -85,5 +112,3 @@ class  Player(pygame.sprite.Sprite):
           self.get_status()
           self.move(dt)
           self.animate(dt)
-
-    

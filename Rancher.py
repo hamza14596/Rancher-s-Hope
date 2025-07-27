@@ -40,20 +40,34 @@ class  Player(pygame.sprite.Sprite):
           keys = pygame.key.get_pressed()
           if keys[pygame.K_UP]:
               self.direction.y= -1
+              self.status = 'up'
           elif keys[pygame.K_DOWN]:
               self.direction.y = 1
+              self.status= 'down'
           else:
                 self.direction.y = 0
 
 
           if keys[pygame.K_LEFT]:
               self.direction.x= -1
+              self.status = 'left'
           elif keys[pygame.K_RIGHT]:
               self.direction.x = 1
+              self.status = 'right'
           else:
                     self.direction.x = 0    
-          
-     def move(self,dt):
+
+     def get_status(self):     #used to add _idle to the status when not moving
+         last_5= self.status[-5:]
+         if last_5 != '_idle':
+                      if self.direction.magnitude() == 0:
+                         self.status += '_idle'
+
+
+      
+       
+
+     def move(self,dt):     
           if self.direction.magnitude() > 0:
             self.direction = self.direction.normalize()
 
@@ -68,6 +82,7 @@ class  Player(pygame.sprite.Sprite):
 
      def update(self,dt):
           self.input()
+          self.get_status()
           self.move(dt)
           self.animate(dt)
 

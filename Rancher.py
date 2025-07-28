@@ -23,11 +23,15 @@ class  Player(pygame.sprite.Sprite):
 
           #Timer
           self.timers = {
-               'tool use' : Ticker (350,self.use_tool)
+               'tool use' : Ticker (350,self.use_tool),
+               'tool switch':Ticker (200)
           }
 
           #tools 
-          self.selected_tool = 'axe'
+          self.tools = ['water', 'hoe', 'axe']
+          self.tool_index= 0
+          self.selected_tool = self.tools[self.tool_index]
+
 
      #Tool Use
      def use_tool(self):
@@ -43,7 +47,8 @@ class  Player(pygame.sprite.Sprite):
           self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
                             'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
                             'right_hoe': [], 'left_hoe': [], 'up_hoe': [], 'down_hoe': [],
-                            'right_axe': [], 'left_axe': [], 'up_axe': [], 'down_axe': [],}
+                            'right_axe': [], 'left_axe': [], 'up_axe': [], 'down_axe': [],
+                            'right_water': [], 'left_water': [], 'up_water': [], 'down_water': [],}
              
           for animation in self.animations.keys():
                 full_path = '../graphics/character/' + animation + '/'
@@ -84,6 +89,24 @@ class  Player(pygame.sprite.Sprite):
                     self.timers['tool use'].activate()
                     self.direction = pygame.math.Vector2()
                     self.frame_index = 0
+
+               #Change Tool
+               # change tool
+               if keys[pygame.K_q] and not self.timers['tool switch'].active:
+                    self.timers['tool switch'].activate()
+                    self.tool_index += 1
+
+               if self.tool_index < len(self.tools):
+                    self.tool_index = self.tool_index
+               else:
+                    self.tool_index = 0
+
+               print(self.tool_index)
+               self.selected_tool = self.tools[self.tool_index]
+
+                    
+
+
 
 
      def get_status(self):     #used to add _idle to the status when not moving

@@ -15,11 +15,12 @@ class  Player(pygame.sprite.Sprite):
           #Player Sprite Setup
           self.image = self.animations[self.status][self.frame_index]
           self.rect = self.image.get_rect(center = position)
+          self.z = LAYERS['main']
 
           #Player Movement Setup
           self.direction = pygame.math.Vector2()
           self.position = pygame.math.Vector2(self.rect.center)   
-          self.speed = 200
+          self.speed = 300
 
           #Timer
           self.timers = {

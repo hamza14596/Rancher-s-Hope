@@ -28,3 +28,11 @@ class Water(general):
                 self.image = self.frames[int(self.frame_index)]
     def update(self,dt):
         self.animate(dt)   
+
+
+class wildflower(general):
+       def __init__ (self,position,surf,groups):
+              super().__init__(position,surf,groups)        
+class tree(general):
+       def __init__(self,position,surf,groups,name):
+              super().__init__(position,surf,groups)

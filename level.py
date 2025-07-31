@@ -2,7 +2,7 @@ import pygame
 from settings import *
 from Rancher import Player
 from overlay import Overlay
-from ground import general, Water
+from ground import general, Water, wildflower, tree
 from pytmx.util_pygame import load_pygame
 from help import *
 
@@ -32,12 +32,19 @@ class Level:
         for x,y, surf in tmx_data.get_layer_by_name('Fence').tiles():
                      general((x * TILE_SIZE,y * TILE_SIZE),surf,self.all_sprites, LAYERS['main'])
 
-
+        #Water
         water_frames=import_folder('../graphics/water')
         for x,y, surf in tmx_data.get_layer_by_name('Water').tiles():
             Water((x * TILE_SIZE,y * TILE_SIZE),water_frames, self.all_sprites)
 
+        #Trees     
+        for obj in tmx_data.get_layer_by_name('Trees'):
+             tree((obj.x,obj.y),obj.image, self.all_sprites, obj.name)     
           
+        #Wildflower
+        for obj in tmx_data.get_layer_by_name('Decoration'):
+             wildflower((obj.x,obj.y),obj.image, self.all_sprites )
+             
 
 
         general(

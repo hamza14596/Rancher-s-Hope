@@ -2,8 +2,9 @@ import pygame
 from settings import *
 from Rancher import Player
 from overlay import Overlay
-from ground import general
+from ground import general, Water
 from pytmx.util_pygame import load_pygame
+from help import *
 
 
 
@@ -15,12 +16,28 @@ class Level:
         self.overlay = Overlay(self.player)
     def setup(self):
         tmx_data = load_pygame('../data/map.tmx')
-        #house
-        print("Available layers:", [layer.name for layer in tmx_data.layers])
+        #house 
+    
+        for layer in['HouseFloor','HouseFurnitureBottom']:
+            for x,y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                    general((x * TILE_SIZE,y * TILE_SIZE),surf,self.all_sprites,LAYERS['house bottom'])
 
-        for x,y, surf in tmx_data.get_layer_by_name('HouseFurnitureBottom').tiles():
-                general((x * TILE_SIZE,y * TILE_SIZE),surf,self.all_sprites,LAYERS['house bottom'])
-       
+        
+        for layer in['HouseWalls','HouseFurnitureTop']:
+            for x,y, surf in tmx_data.get_layer_by_name(layer).tiles():
+                    general((x * TILE_SIZE,y * TILE_SIZE),surf,self.all_sprites,LAYERS['main'])
+
+
+         #fence
+        for x,y, surf in tmx_data.get_layer_by_name('Fence').tiles():
+                     general((x * TILE_SIZE,y * TILE_SIZE),surf,self.all_sprites, LAYERS['main'])
+
+
+        water_frames=import_folder('../graphics/water')
+        for x,y, surf in tmx_data.get_layer_by_name('Water').tiles():
+            Water((x * TILE_SIZE,y * TILE_SIZE),water_frames, self.all_sprites)
+
+          
 
 
         general(

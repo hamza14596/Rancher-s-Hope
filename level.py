@@ -16,6 +16,10 @@ class Level:
     def setup(self):
         tmx_data = load_pygame('../data/map.tmx')
         #house
+        print("Available layers:", [layer.name for layer in tmx_data.layers])
+
+        for x,y, surf in tmx_data.get_layer_by_name('HouseFurnitureBottom').tiles():
+                general((x * TILE_SIZE,y * TILE_SIZE),surf,self.all_sprites,LAYERS['house bottom'])
        
 
 

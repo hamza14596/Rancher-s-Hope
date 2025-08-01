@@ -40,11 +40,11 @@ class wildflower(general):
 class tree(general):
        def __init__(self,position,surf,groups,name):
               super().__init__(position,surf,groups)
-
+              
               #tree attributes
               self.health = 40
               self.alive = True
-              stump_path = (f'../graphics/stumps/{'small' if name =='small' else 'large'}.png')
+              stump_path = f'../graphics/stumps/{'small' if name == "Small" else "large"}.png'
               self.stump_surf = pygame.image.load(stump_path).convert_alpha()
               self.invul_timer = Ticker(200)
 
@@ -57,9 +57,21 @@ class tree(general):
        def damage(self):
               #damage the tree
               self.health -= 5
+
+              #remove an apple
               if len(self.apple_sprites.sprites()) > 0:
                      random_apple = choice(self.apple_sprites.sprites())
                      random_apple.kill()
+       def check_death(self):
+              if self.health <= 0:
+                     self.image = self.stump_surf
+                     self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
+                     self.hitbox = self.rect.copy().inflate(-10,-self.rect.height * 0.6)
+                     self.alive = False
+
+       def update(self,dt):
+              if self.alive:
+                     self.check_death()
 
        def create_fruit(self):
               for position  in self.apple_position:

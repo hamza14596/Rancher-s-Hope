@@ -50,15 +50,12 @@ class  Player(pygame.sprite.Sprite):
           #interaction
           self.tree_sprites = tree_sprites
 
-
-
      #Tool Use
-     def use_tool(self):
-          keys = pygame.key.get_pressed()
-          if keys [pygame.K_SPACE]:
-               self.timers['tool use'].activate()
+     def use_tool(self):        
+          print('tool use')
           if self.selected_tool == 'hoe':
                pass
+
           if self.selected_tool == 'axe':
                for tree in self.tree_sprites.sprites():
                     if tree.rect.collidepoint(self.target_position):
@@ -67,12 +64,13 @@ class  Player(pygame.sprite.Sprite):
           if self.selected_tool =='water':
                pass
       
-     def use_seed(self):
-          pass
 
      def get_target_position(self):
 
           self.target_position = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
+
+     def use_seed(self):
+          pass
 
      def import_assests(self):
           self.animations = {'up': [], 'down': [], 'left': [], 'right': [],

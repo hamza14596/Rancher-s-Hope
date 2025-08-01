@@ -4,7 +4,7 @@ from help import *
 from ticker import Ticker
 
 class  Player(pygame.sprite.Sprite):
-     def  __init__(self,position,group):
+     def  __init__(self,position,group, collision_sprites):
           super().__init__(group)
           
           self.import_assests()
@@ -21,6 +21,10 @@ class  Player(pygame.sprite.Sprite):
           self.direction = pygame.math.Vector2()
           self.position = pygame.math.Vector2(self.rect.center)   
           self.speed = 300
+
+          #collision
+          self.collision_sprites = collision_sprites = collision_sprites
+          self.hitbox = self.rect.copy().inflate((-126,-70))
 
           #Timer
           self.timers = {
@@ -155,6 +159,24 @@ class  Player(pygame.sprite.Sprite):
           for timers in self.timers.values():
                timers.update() 
 
+     def collision(self, direction):
+          for sprite in self.collision_sprites.sprites():
+               if hasattr(sprite,'hitbox'):
+                    if sprite.hitbox.colliderect(self.hitbox):
+                         if direction == 'horizontal':
+                              if self.direction.x > 0:   #this indicates the player is moving towards the right
+                                   self.hitbox.right = sprite.hitbox.left
+                              if self.direction.x <0:    #this indicates the player is moving towards left
+                                   self.hitbox.left = sprite.hitbox.right
+                              self.rect.centerx = self.hitbox.centerx
+                              self.position.x = self.hitbox.centerx
+                         if direction == 'vertical':
+                              if self.direction.y > 0:   #this indicates the player is moving towards down
+                                   self.hitbox.bottom = sprite.hitbox.top
+                              if self.direction.y <0:    #this indicates the player is moving towards up
+                                   self.hitbox.top = sprite.hitbox.bottom
+                              self.rect.centery = self.hitbox.centery
+                              self.position.y = self.hitbox.centery
 
      def move(self,dt):     
           if self.direction.magnitude() > 0:
@@ -162,10 +184,14 @@ class  Player(pygame.sprite.Sprite):
 
 
           self.position.x += self.direction.x * self.speed * dt
-          self.rect.centerx = self.position.x
+          self.hitbox.centerx = round(self.position.x) 
+          self.rect.centerx = self.hitbox.centerx
+          self.collision('horizontal')
 
           self.position.y += self.direction.y * self.speed * dt
-          self.rect.centery = self.position.y
+          self.hitbox.centery = round(self.position.y)
+          self.rect.centery = self.hitbox.centery
+          self.collision('vertical')
           
           
 

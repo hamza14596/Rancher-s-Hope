@@ -13,12 +13,15 @@ class Level:
         self.display_surface = pygame.display.get_surface()
         self.all_sprites = Camera()
         self.collision_sprites = pygame.sprite.Group()
+        self.tree_sprites = pygame.sprite.Group()
+
         self.setup()
         self.overlay = Overlay(self.player)
     def setup(self):
         tmx_data = load_pygame('../data/map.tmx')
+        
+        
         #house 
-    
         for layer in['HouseFloor','HouseFurnitureBottom']:
             for x,y, surf in tmx_data.get_layer_by_name(layer).tiles():
                     general((x * TILE_SIZE,y * TILE_SIZE),surf,self.all_sprites,LAYERS['house bottom'])
@@ -40,7 +43,7 @@ class Level:
 
         #Trees     
         for obj in tmx_data.get_layer_by_name('Trees'):
-             tree((obj.x,obj.y),obj.image, [self.all_sprites,self.collision_sprites], obj.name)     
+             tree((obj.x,obj.y),obj.image, [self.all_sprites,self.collision_sprites,self.tree_sprites], obj.name)     
           
         #Wildflower
         for obj in tmx_data.get_layer_by_name('Decoration'):
@@ -53,12 +56,16 @@ class Level:
         #Player
         for obj in tmx_data.get_layer_by_name('Player'):
              if obj.name == 'Start':
-                self.player = Player((obj.x,obj.y),self.all_sprites,self.collision_sprites)
+                self.player = Player(
+                    position=(obj.x,obj.y),
+                    group=self.all_sprites,
+                    collision_sprites=self.collision_sprites,
+                    tree_sprites = self.tree_sprites)
         general(
             position =  (0,0),
             surf = pygame.image.load('../graphics/world/ground.png').convert_alpha(),
-            groups =self.all_sprites ,
-            z = LAYERS['ground'] )
+            groups = self.all_sprites,
+            z = LAYERS['ground'])
 
    
     def run(self,dt):
@@ -84,4 +91,5 @@ class Camera(pygame.sprite.Group):
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -=self.offset
                     self.display_surface.blit(sprite.image,offset_rect)
-                 
+
+                         

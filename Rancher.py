@@ -4,7 +4,7 @@ from help import *
 from ticker import Ticker
 
 class  Player(pygame.sprite.Sprite):
-     def  __init__(self,position,group, collision_sprites):
+     def  __init__(self,position,group, collision_sprites,tree_sprites):
           super().__init__(group)
           
           self.import_assests()
@@ -47,17 +47,32 @@ class  Player(pygame.sprite.Sprite):
           self.selected_seed = self.seed[self.seed_index]
 
 
+          #interaction
+          self.tree_sprites = tree_sprites
+
+
+
      #Tool Use
      def use_tool(self):
           keys = pygame.key.get_pressed()
           if keys [pygame.K_SPACE]:
                self.timers['tool use'].activate()
+          if self.selected_tool == 'hoe':
+               pass
+          if self.selected_tool == 'axe':
+               for tree in self.tree_sprites.sprites():
+                    if tree.rect.collidepoint(self.target_position):
+                         tree.damage()
 
+          if self.selected_tool =='water':
+               pass
       
      def use_seed(self):
           pass
 
+     def get_target_position(self):
 
+          self.target_position = self.rect.center + PLAYER_TOOL_OFFSET[self.status.split('_')[0]]
 
      def import_assests(self):
           self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
@@ -198,6 +213,9 @@ class  Player(pygame.sprite.Sprite):
      def update(self,dt):
           self.input()
           self.get_status()
+          self.update_ticker()
+          self.get_target_position()
+
           self.move(dt)
           self.animate(dt)
-          self.update_ticker()
+         

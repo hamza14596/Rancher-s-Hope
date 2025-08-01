@@ -1,6 +1,7 @@
 import pygame
 from settings import * 
-from random import randint
+from random import randint, choice
+from ticker import Ticker
 
 class general (pygame.sprite.Sprite):
         def __init__(self,position, surf, groups, z = LAYERS['main'] ):
@@ -40,6 +41,12 @@ class tree(general):
        def __init__(self,position,surf,groups,name):
               super().__init__(position,surf,groups)
 
+              #tree attributes
+              self.health = 40
+              self.alive = True
+              stump_path = (f'../graphics/stumps/{'small' if name =='small' else 'large'}.png')
+              self.stump_surf = pygame.image.load(stump_path).convert_alpha()
+              self.invul_timer = Ticker(200)
 
               #apples
               self.apple_surface = pygame.image.load('../graphics/fruit/apple.png')
@@ -47,15 +54,22 @@ class tree(general):
               self.apple_sprites = pygame.sprite.Group()
               self.create_fruit()
 
+       def damage(self):
+              #damage the tree
+              self.health -= 5
+              if len(self.apple_sprites.sprites()) > 0:
+                     random_apple = choice(self.apple_sprites.sprites())
+                     random_apple.kill()
+
        def create_fruit(self):
               for position  in self.apple_position:
                      if randint(0,10) < 2:
                             x = position[0] + self.rect.left
                             y = position[1] + self.rect.top
                             general(
-                                   position = (x,y),
-                                   surf = self.apple_surface,
-                                   groups = [self.apple_sprites,self.groups()[0]],
-                                   z = LAYERS['fruit'])
+                            position = (x,y),
+                            surf = self.apple_surface,
+                            groups = [self.apple_sprites,self.groups()[0]],
+                            z = LAYERS['fruit'])  
                             
                      

@@ -36,7 +36,27 @@ class Water(general):
 class wildflower(general):
        def __init__ (self,position,surf,groups):
               super().__init__(position,surf,groups)  
-              self.hitbox = self.rect.copy().inflate(-20,-self.rect.height * 0.9)      
+              self.hitbox = self.rect.copy().inflate(-20,-self.rect.height * 0.9)     
+
+
+
+class Particle (general):
+       def __init__(self, position, surf, groups, z):
+              super().__init__(self,position, surf, groups, z)
+              self.start_time = pygame.time.get_ticks()
+         
+
+              #Surface
+              mask_surf = pygame.mask.from_surface(self.image)
+              new_surf = mask_surf.to_surface()
+              new_surf.set_colorkey((0,0,0))
+              self.image = new_surf  
+
+       def update(self,dt):
+              current_time = pygame.time.get_ticks()
+              if current_time - self.start_time > self.duration:
+                     self.kill()
+
 class tree(general):
        def __init__(self,position,surf,groups,name):
               super().__init__(position,surf,groups)
@@ -61,13 +81,20 @@ class tree(general):
               #remove an apple
               if len(self.apple_sprites.sprites()) > 0:
                      random_apple = choice(self.apple_sprites.sprites())
+                     Particle (
+                            position = random_apple.rect.topleft,
+                            surf = random_apple.image,
+                            groups = self.groups()[0], 
+                            z = LAYERS['fruit'])
                      random_apple.kill()
+                     
+
        def check_death(self):
               if self.health <= 0:
                      self.image = self.stump_surf
                      self.rect = self.image.get_rect(midbottom = self.rect.midbottom)
                      self.hitbox = self.rect.copy().inflate(-10,-self.rect.height * 0.6)
-                     self.alive = False
+                     self.alive = False 
 
        def update(self,dt):
               if self.alive:

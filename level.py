@@ -5,6 +5,7 @@ from overlay import Overlay
 from ground import general, Water, wildflower, tree, interaction
 from pytmx.util_pygame import load_pygame
 from help import *
+from transition import transition
 
 
 
@@ -21,6 +22,8 @@ class Level:
 
         self.setup()
         self.overlay = Overlay(self.player)
+        self.transition = transition(self.reset, self.player)
+
     def setup(self):
         tmx_data = load_pygame('../data/map.tmx')
         
@@ -87,13 +90,23 @@ class Level:
          
          self.player.item_inventory[item] += 1
 
+    def reset(self):
+         
+         for tree in self.tree_sprites.sprites():
+              for apple in tree.apple_sprites.sprites():
+                   apple.kill()
+              tree.create_fruit()
+
+
     def run(self,dt):
         self.display_surface.fill('black')
         self.all_sprites.customize_draw(self.player)
         self.all_sprites.update(dt)
     
         self.overlay.display()
-        print(self.player.item_inventory)
+
+        if self.player.sleep:
+             self.transition.play()
 
 class Camera(pygame.sprite.Group):
     def __init__(self):

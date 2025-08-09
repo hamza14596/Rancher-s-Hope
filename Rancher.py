@@ -4,7 +4,7 @@ from help import *
 from ticker import Ticker
 
 class  Player(pygame.sprite.Sprite):
-     def  __init__(self,position,group, collision_sprites,tree_sprites):
+     def  __init__(self,position,group, collision_sprites,tree_sprites, interaction):
           super().__init__(group)
           
           self.import_assests()
@@ -45,10 +45,18 @@ class  Player(pygame.sprite.Sprite):
           self.seed = ['tomato', 'corn']
           self.seed_index  = 0
           self.selected_seed = self.seed[self.seed_index]
-
+          
+          #inventory
+          self.item_inventory = {
+               'wood':  0,
+               'apple': 0,
+               'corn':  0,
+               'tomato':0
+          }
 
           #interaction
           self.tree_sprites = tree_sprites
+          self.interaction = interaction
 
      #Tool Use
      def use_tool(self):        

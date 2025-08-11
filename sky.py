@@ -7,9 +7,9 @@ from random import randint,choice
 class Drop(general):
     def __init__(self, surface, position, moving,groups, z):
 
-        super().__init__(position, surface. groups, z)
+        super().__init__(position, surface, groups, z)
         self.lifetime = randint(400,500)
-        self.start_time = pygame.time.get_ticket()
+        self.start_time = pygame.time.get_ticks()
 
         self.moving = moving
         if self.moving:
@@ -18,8 +18,9 @@ class Drop(general):
             self.speed = randint(200,250)
 
     def update(self,dt):
-        self.position += self.direction * self.speed * dt
-        self.rect.topleft = (round(self.position.x), round(self.position.y))
+        if self.moving:
+            self.position += self.direction * self.speed * dt
+            self.rect.topleft = (round(self.position.x), round(self.position.y))
 
         if pygame.time.get_ticks() - self.start_time >= self.lifetime:
             self.kill()

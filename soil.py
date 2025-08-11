@@ -2,6 +2,7 @@ import pygame
 from settings import * 
 from pytmx.util_pygame import load_pygame
 from help import * 
+from random import choice
 
 class SoilTile(pygame.sprite.Sprite):
     def __init__(self,position,surface,groups):
@@ -10,16 +11,26 @@ class SoilTile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = position)
         self.z = LAYERS['soil']
 
+class WaterTile(pygame.sprite.Sprite):
+    def __init__(self,position,surface,groups):
+        super().__init__(groups)
+        self.image = surface
+        self.rect = self.image.get_rect(topleft = position)
+        self.z = LAYERS['soil water']
+
+
 class SoilLayer:
     def __init__(self,all_sprites):
 
         #sprite group
         self.all_sprites = all_sprites
         self.soil_sprites = pygame.sprite.Group()
+        self.water_sprites = pygame.sprite.Group()
 
         #graphics
         self.soil_surface = pygame.image.load('../graphics/soil/o.png')
         self.soil_surfaces = import_folder_dict('../graphics/soil')
+        self.water_surfaces = import_folder('../graphics/soil_water')
         
 
 
@@ -59,6 +70,34 @@ class SoilLayer:
                     self.create_soil_tiles()
 
 
+
+    def water(self,target_position):
+        for soil_sprite in self.soil_sprites.sprites():
+            if soil_sprite.rect.collidepoint(target_position):
+                
+                x = soil_sprite.rect.x //TILE_SIZE
+                y = soil_sprite.rect.y // TILE_SIZE
+                self.grid[y][x].append('W')
+
+                position = soil_sprite.rect.topleft
+                surface = choice(self.water_surfaces)
+                WaterTile(position, surface, [self.all_sprites,self.water_sprites])
+
+
+
+    def remove_water(self):
+
+        for sprite in self.water_sprites.sprites():
+            sprite.kill()
+
+
+        for row in self.grid:
+            for cell in row:
+                if 'W' in cell:
+                    cell.remove('W')
+
+
+        
     def create_soil_tiles(self):
         self.soil_sprites.empty()
         for index_row,row in enumerate(self.grid):

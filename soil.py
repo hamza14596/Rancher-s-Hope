@@ -29,7 +29,7 @@ class Plant(pygame.sprite.Sprite):
         self.check_watered = check_watered
 
         self.age = 0
-        self.max_age = len(self.frames) -1
+        self.max_age = len(self.frames) - 1
         self.grow_speed = GROW_SPEED[plant_type]
 
         self.image = self.frames[self.age]
@@ -39,11 +39,13 @@ class Plant(pygame.sprite.Sprite):
     
 
     def grow(self):
-        if self.check_watered(self.rect.center):
+         if self.check_watered(self.rect.center):
             self.age += self.grow_speed
-
+            if self.age >= len(self.frames):
+                self.age = len(self.frames) - 1  # cap at last stage
             self.image = self.frames[int(self.age)]
-            self.rect = self.image.get_rect(midbottom = self.soil.rect.midbottom + pygame.math.Vector2(0,self.y_offset))
+            self.rect = self.image.get_rect(midbottom=self.soil.rect.midbottom + pygame.math.Vector2(0, self.y_offset))
+
 
 
 class SoilLayer:

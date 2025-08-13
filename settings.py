@@ -42,7 +42,7 @@ APPLE_POS = {
 GROW_SPEED = {
     'wood' : 4,
     'apple' : 2,
-    'corn' : 10,
+    'corn' : 1,
     'tomato' : 20
 }
 

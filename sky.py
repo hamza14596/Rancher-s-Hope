@@ -22,6 +22,7 @@ class Drop(general):
             self.position += self.direction * self.speed * dt
             self.rect.topleft = (round(self.position.x), round(self.position.y))
 
+            
         if pygame.time.get_ticks() - self.start_time >= self.lifetime:
             self.kill()
 

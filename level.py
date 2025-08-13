@@ -99,6 +99,8 @@ class Level:
          self.player.item_inventory[item] += 1
 
     def reset(self):
+         self.soil_layer.update_plants()
+
          self.soil_layer.remove_water()
          self.raining = randint(0,10) > 3
          self.soil_layer.raining = self.raining

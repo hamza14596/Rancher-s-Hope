@@ -5,7 +5,7 @@ from help import *
 from random import choice
 
 class SoilTile(pygame.sprite.Sprite):
-    def __init__(self,position,surface,groups):
+    def __init__(self,position,surface,groups, soil, check_watered):
         super().__init__(groups)
         self.image = surface
         self.rect = self.image.get_rect(topleft = position)
@@ -19,6 +19,33 @@ class WaterTile(pygame.sprite.Sprite):
         self.z = LAYERS['soil water']
 
 
+class Plant(pygame.sprite.Sprite):
+    def __init__(self, plant_type, groups, soil,check_watered):
+        super().__init__(groups)
+
+        self.plant_type = plant_type
+        self.frames = import_folder(f'../graphics/fruit/{plant_type}')
+        self.soil = soil
+        self.check_watered = check_watered
+
+        self.age = 0
+        self.max_age = len(self.frames) -1
+        self.grow_speed = GROW_SPEED[plant_type]
+
+        self.image = self.frames[self.age]
+        self.y_offset = -16 if plant_type == 'corn' else -8
+        self.rect = self.image.get_rect(midbottom = soil.rect.midbottom + pygame.math.Vector2(0,self.y_offset))
+        self.z = LAYERS['ground plant']
+    
+
+    def grow(self):
+        if self.check_watered(self.rect.center):
+            self.age += self.grow_speed
+
+            self.image = self.frames[int(self.age)]
+            self.rect = self.image.get_rect(midbottom = self.soil.rect.midbottom + pygame.math.Vector2(0,self.y_offset))
+
+
 class SoilLayer:
     def __init__(self,all_sprites):
 
@@ -26,6 +53,7 @@ class SoilLayer:
         self.all_sprites = all_sprites
         self.soil_sprites = pygame.sprite.Group()
         self.water_sprites = pygame.sprite.Group()
+        self.plant_sprites = pygame.sprite.Group()
 
         #graphics
         self.soil_surface = pygame.image.load('../graphics/soil/o.png')
@@ -107,6 +135,31 @@ class SoilLayer:
                     cell.remove('W')
 
 
+    def check_watered(self, position):
+
+        x = position[0] // TILE_SIZE
+        y = position[1] // TILE_SIZE
+        cell = self.grid[y][x]
+        is_watered = 'W' in cell 
+        return is_watered
+
+    def plant_seed(self, target_position, seed):
+        for soil_sprite in self.soil_sprites.sprites():
+            if soil_sprite.rect.collidepoint(target_position):
+
+                x = soil_sprite.rect.x // TILE_SIZE
+                y = soil_sprite.rect.y // TILE_SIZE
+
+
+
+                if 'P' not in self.grid[y][x]:
+                    self.grid[y][x].append('P')
+                    Plant(seed, [self.all_sprites, self.plant_sprites] , soil_sprite, self.check_watered)
+
+
+    def update_plants(self):
+        for plant in self.plant_sprites.sprites():
+            plant.grow()
         
     def create_soil_tiles(self):
         self.soil_sprites.empty()
@@ -134,7 +187,7 @@ class SoilLayer:
 
                     if l and b and not any((t,r)): tile_type = 'tr'
                     if r and b and not any((t,l)): tile_type = 'tl' 
-                    if l and t and not any((b,r)): tile_typee = 'br'
+                    if l and t and not any((b,r)): tile_type = 'br'
                     if r and t and not any((b,l)): tile_type = 'bl'
 
                     if all((t,b,r)) and not l: tile_type = 'tbr'
@@ -147,6 +200,8 @@ class SoilLayer:
                     SoilTile(
                             position = (index_col*TILE_SIZE, index_row * TILE_SIZE),
                              surface = self.soil_surfaces[tile_type],
-                             groups=[self.all_sprites,self.soil_sprites]
+                             groups=[self.all_sprites,self.soil_sprites],
+                             soil = self,
+                             check_watered= self.check_watered
                              )
         

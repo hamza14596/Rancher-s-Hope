@@ -9,6 +9,7 @@ from transition import transition
 from soil import SoilLayer
 from sky import Rain, Sky
 from random import randint
+from menu import menu
 
 class Level:
     def __init__ (self):
@@ -30,7 +31,13 @@ class Level:
         self.raining = randint(0,10) > 3
         self.soil_layer.raining = self.raining
         self.sky = Sky()
+
+        self.menu = menu(self.player, self.toggle_shop)
+        self.shop_active = False
        
+    def toggle_shop(self):
+         
+         self.shop_active = not self.shop_active
 
     def setup(self):
         tmx_data = load_pygame('../data/map.tmx')
@@ -83,10 +90,14 @@ class Level:
                     collision_sprites=self.collision_sprites,
                     tree_sprites = self.tree_sprites,
                     interaction = self.interaction_sprites,
-                    soil_layer = self.soil_layer)
+                    soil_layer = self.soil_layer,
+                    toggle_shop = self.toggle_shop)
                 
              if obj.name == 'Bed':
                   interaction((obj.x,obj.y),(obj.width,obj.height),self.interaction_sprites,'Bed')
+
+             if obj.name == 'Trader':
+                  interaction((obj.x,obj.y),(obj.width,obj.height),self.interaction_sprites,'Trader')
              
 
         general(
@@ -128,18 +139,23 @@ class Level:
     def run(self,dt):
         self.display_surface.fill('black')
         self.all_sprites.customize_draw(self.player)
-        self.all_sprites.update(dt)
-        self.plant_collision()
+
+        if self.shop_active:
+             self.menu.update()
+        else:
+             self.all_sprites.update(dt)
+             self.plant_collision()
     
         self.overlay.display()
 
-        if self.raining:
+        if self.raining and not self.shop_active:
              self.rain.update()
         
         self.sky.display(dt)
 
         if self.player.sleep:
              self.transition.play()
+        
 
 class Camera(pygame.sprite.Group):
     def __init__(self):

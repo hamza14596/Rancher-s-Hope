@@ -2,12 +2,12 @@ import pygame
 from settings import *
 from Rancher import Player
 from overlay import Overlay
-from ground import general, Water, wildflower, tree, interaction
+from ground import general, Water, wildflower, tree, interaction, Particle
 from pytmx.util_pygame import load_pygame
 from help import *
 from transition import transition
 from soil import SoilLayer
-from sky import Rain 
+from sky import Rain, Sky
 from random import randint
 
 class Level:
@@ -29,6 +29,7 @@ class Level:
         self.rain = Rain(self.all_sprites)
         self.raining = randint(0,10) > 3
         self.soil_layer.raining = self.raining
+        self.sky = Sky()
        
 
     def setup(self):
@@ -112,12 +113,17 @@ class Level:
                    apple.kill()
               tree.create_fruit()
 
+
+         self.sky.start_color = [255,255,255]
+
     def plant_collision(self):
         if self.soil_layer.plant_sprites:
              for plant in self.soil_layer.plant_sprites.sprites():
                   if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
                        self.player_add(plant.plant_type)
                        plant.kill()
+                       Particle(plant.rect.topleft, plant.image, self.all_sprites,z= LAYERS['main'])
+                       self.soil_layer.grid[plant.rect.centery // TILE_SIZE][plant.rect.centerx // TILE_SIZE].remove('P')
 
     def run(self,dt):
         self.display_surface.fill('black')
@@ -130,10 +136,10 @@ class Level:
         if self.raining:
              self.rain.update()
         
+        self.sky.display(dt)
 
         if self.player.sleep:
              self.transition.play()
-        print(self.player.item_inventory)
 
 class Camera(pygame.sprite.Group):
     def __init__(self):

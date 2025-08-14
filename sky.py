@@ -4,6 +4,21 @@ from help import import_folder
 from ground import general
 from random import randint,choice
 
+class Sky:
+    def __init__(self):
+        self.display_surface = pygame.display.get_surface()
+        self.full_surface = pygame.Surface((SCREEN_WIDTH,SCREEN_HEIGHT))
+        self.start_color = [255,255,255]
+        self.end_color = (40,100,190)
+
+    def display(self,dt):
+        for index, value in enumerate(self.end_color):
+            if self.start_color[index] > value:
+                self.start_color[index] -= 2 * dt
+        self.full_surface.fill(self.start_color)
+        self.display_surface.blit(self.full_surface, (0,0), special_flags = pygame.BLEND_RGBA_MULT)
+
+
 class Drop(general):
     def __init__(self, surface, position, moving,groups, z):
 
@@ -22,7 +37,7 @@ class Drop(general):
             self.position += self.direction * self.speed * dt
             self.rect.topleft = (round(self.position.x), round(self.position.y))
 
-            
+
         if pygame.time.get_ticks() - self.start_time >= self.lifetime:
             self.kill()
 

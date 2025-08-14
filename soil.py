@@ -31,6 +31,7 @@ class Plant(pygame.sprite.Sprite):
         self.age = 0
         self.max_age = len(self.frames) - 1
         self.grow_speed = GROW_SPEED[plant_type]
+        self.harvestable = False
 
         self.image = self.frames[self.age]
         self.y_offset = -16 if plant_type == 'corn' else -8
@@ -41,6 +42,12 @@ class Plant(pygame.sprite.Sprite):
     def grow(self):
          if self.check_watered(self.rect.center):
             self.age += self.grow_speed
+
+            if int(self.age) > 0:
+                self.z = LAYERS['main']
+                self.hitbox = self.rect.copy().inflate(-26,self.rect.height * 0.4)
+                self.harvestable = True
+
             if self.age >= len(self.frames):
                 self.age = len(self.frames) - 1  # cap at last stage
             self.image = self.frames[int(self.age)]
@@ -49,10 +56,11 @@ class Plant(pygame.sprite.Sprite):
 
 
 class SoilLayer:
-    def __init__(self,all_sprites):
+    def __init__(self,all_sprites, collision_sprites):
 
         #sprite group
         self.all_sprites = all_sprites
+        self.collision_sprites = collision_sprites
         self.soil_sprites = pygame.sprite.Group()
         self.water_sprites = pygame.sprite.Group()
         self.plant_sprites = pygame.sprite.Group()
@@ -156,7 +164,7 @@ class SoilLayer:
 
                 if 'P' not in self.grid[y][x]:
                     self.grid[y][x].append('P')
-                    Plant(seed, [self.all_sprites, self.plant_sprites] , soil_sprite, self.check_watered)
+                    Plant(seed, [self.all_sprites, self.plant_sprites, self.collision_sprites] , soil_sprite, self.check_watered)
 
 
     def update_plants(self):

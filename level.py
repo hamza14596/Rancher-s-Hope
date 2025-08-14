@@ -20,7 +20,7 @@ class Level:
         self.tree_sprites = pygame.sprite.Group()
         self.apple_sprites = pygame.sprite.Group()
         self.interaction_sprites =pygame.sprite.Group()
-        self.soil_layer = SoilLayer(self.all_sprites)
+        self.soil_layer = SoilLayer(self.all_sprites, self.collision_sprites)
         self.setup()
         self.overlay = Overlay(self.player)
         self.transition = transition(self.reset, self.player)
@@ -112,11 +112,18 @@ class Level:
                    apple.kill()
               tree.create_fruit()
 
+    def plant_collision(self):
+        if self.soil_layer.plant_sprites:
+             for plant in self.soil_layer.plant_sprites.sprites():
+                  if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
+                       self.player_add(plant.plant_type)
+                       plant.kill()
 
     def run(self,dt):
         self.display_surface.fill('black')
         self.all_sprites.customize_draw(self.player)
         self.all_sprites.update(dt)
+        self.plant_collision()
     
         self.overlay.display()
 
@@ -126,6 +133,7 @@ class Level:
 
         if self.player.sleep:
              self.transition.play()
+        print(self.player.item_inventory)
 
 class Camera(pygame.sprite.Group):
     def __init__(self):

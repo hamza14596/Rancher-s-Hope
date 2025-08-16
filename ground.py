@@ -83,6 +83,7 @@ class tree(general):
        def damage(self):
               #damage the tree
               self.health -= 5
+              self.axe_sound.play()
 
               #remove an apple
               if len(self.apple_sprites.sprites()) > 0:

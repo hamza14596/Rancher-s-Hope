@@ -126,4 +126,12 @@ class tree(general):
                             groups = [self.apple_sprites,self.groups()[0]],
                             z = LAYERS['fruit'])  
                             
+
+
+       def reset(self):
+        for apple in self.apple_sprites.sprites():
+            apple.kill()
+
+        if self.alive:
+            self.create_fruit()
                      

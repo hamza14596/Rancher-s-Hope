@@ -9,6 +9,7 @@ class Game:
         pygame.display.set_caption ("Rancher's Hope")
         self.clock = pygame.time.Clock()
         self.level = Level()
+        
 
     def run(self):
     

@@ -126,9 +126,7 @@ class Level:
               self.soil_layer.water_all()
 
          for tree in self.tree_sprites.sprites():
-              for apple in tree.apple_sprites.sprites():
-                   apple.kill()
-              tree.create_fruit()
+               tree.reset()
 
 
          self.sky.start_color = [255,255,255]

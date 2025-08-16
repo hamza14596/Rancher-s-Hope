@@ -43,7 +43,7 @@ class Plant(pygame.sprite.Sprite):
          if self.check_watered(self.rect.center):
             self.age += self.grow_speed
 
-            if int(self.age) > 0:
+            if int(self.age) > self.max_age - 1:
                 self.z = LAYERS['main']
                 self.hitbox = self.rect.copy().inflate(-26,self.rect.height * 0.4)
                 self.harvestable = True

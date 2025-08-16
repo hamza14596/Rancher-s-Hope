@@ -65,6 +65,9 @@ class  Player(pygame.sprite.Sprite):
           self.sleep = False
           self.soil_layer = soil_layer
           self.toggle_shop = toggle_shop
+
+          self.watering = pygame.mixer.Sound('audio/water.mp3')
+          self.watering.set_volume(0.25)
      #Tool Use
      def use_tool(self):        
           
@@ -78,6 +81,7 @@ class  Player(pygame.sprite.Sprite):
 
           if self.selected_tool =='water':
                self.soil_layer.water(self.target_position)
+               self.watering.play()
       
 
      def get_target_position(self):

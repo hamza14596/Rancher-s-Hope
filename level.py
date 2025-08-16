@@ -28,13 +28,18 @@ class Level:
 
 
         self.rain = Rain(self.all_sprites)
-        self.raining = randint(0,10) > 3
+        self.raining = randint(0,10) > 7
         self.soil_layer.raining = self.raining
         self.sky = Sky()
 
         self.menu = menu(self.player, self.toggle_shop)
         self.shop_active = False
        
+        self.success = pygame.mixer.Sound('audio/success.wav')
+        self.success.set_volume(0.25)
+        self.music = pygame.mixer.Sound('audio/music.mp3')
+        self.music.play(loops = -1) 
+
     def toggle_shop(self):
          
          self.shop_active = not self.shop_active
@@ -109,12 +114,13 @@ class Level:
     def player_add(self,item):
          
          self.player.item_inventory[item] += 1
+         self.success.play()
 
     def reset(self):
          self.soil_layer.update_plants()
 
          self.soil_layer.remove_water()
-         self.raining = randint(0,10) > 3
+         self.raining = randint(0,10) > 7
          self.soil_layer.raining = self.raining
          if self.raining:
               self.soil_layer.water_all()

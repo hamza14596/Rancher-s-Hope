@@ -21,6 +21,7 @@ Controls:
 WASD for movement of player.
 E to plant seeds.
 Q to change tools.
+V to change seeds.
 SPACEBAR to use tools.
 Arrow Keys UP and DOWN to change the selected item in the menu.
 SPACEBAR to buy/sell items in the menu bar.
